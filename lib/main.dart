@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:gpay_clone/providers/user_providers.dart';
 import 'package:gpay_clone/screens/home_screen.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +16,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: HomeScreen());
+    return MultiProvider(
+        providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+        child: MaterialApp(home: HomeScreen()));
   }
 }
