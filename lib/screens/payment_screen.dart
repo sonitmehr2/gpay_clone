@@ -1,11 +1,15 @@
+// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:gpay_clone/models/user_model.dart' as model;
 import 'package:gpay_clone/resources/constants.dart';
+import 'package:gpay_clone/screens/payment_succesful_screen.dart';
 import 'package:gpay_clone/services/firestore_methods.dart';
 import 'package:gpay_clone/widgets/user_profile_icon.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user_providers.dart';
+import '../resources/utils.dart';
 
 class PaymentScreen extends StatefulWidget {
   PaymentScreen({super.key});
@@ -27,9 +31,28 @@ class _PaymentScreenState extends State<PaymentScreen> {
   final TextEditingController _amountController = TextEditingController();
   double multiply = 0.1;
 
-  _addTransaction(String sender_id, String reciever_id) async {
-    await FireStoreMethods()
-        .addTransactionDetails(sender_id, reciever_id, _amountController.text);
+  Future<void> _addTransaction(
+      String sender_id, String reciever_id, String senderHexColor) async {
+    bool check = await FireStoreMethods().addTransactionDetails(
+        sender_id,
+        reciever_id,
+        _amountController.text,
+        _nameController.text,
+        senderHexColor);
+    if (check) {
+      UserProvider _userProvider = Provider.of(context, listen: false);
+      _userProvider.refreshUser();
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PaymentSuccessfulScreen(
+                    amount: _amountController.text,
+                    bankingName: _nameController.text,
+                    upiID: _upiIDController.text,
+                  )));
+    } else {
+      showSnackBar(context, "UPI ID Not Found");
+    }
   }
 
   @override
@@ -41,17 +64,23 @@ class _PaymentScreenState extends State<PaymentScreen> {
     double heightOfTextField = 25;
     double amountFieldSize = 55;
     double variableMaxwidth = fullScreenWidth * multiply;
+    Color backgroundColor = hexToColor(user.hexColor);
 
     return Scaffold(
       floatingActionButton: ElevatedButton(
-        onPressed: () async => await _addTransaction(user.uid, recieverUpi),
+        onPressed: () async => await _addTransaction(
+            user.uid, _upiIDController.text, user.hexColor),
         child: const Icon(Icons.arrow_right_alt_outlined),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            UserProfileIcon(imageAsset: girlImage, radius: 30),
+            UserProfileIcon(
+              backgroundColor: backgroundColor,
+              radius: 20,
+              name: user.name,
+            ),
             SizedBox(
               width: fullScreenWidth * 0.8,
               height: heightOfTextField,
@@ -96,7 +125,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     cursorHeight: amountFieldSize,
                     style: TextStyle(fontSize: amountFieldSize),
                     onChanged: (value) {
-                      if (value.length == 0) {
+                      if (value.isEmpty) {
                         setState(() {
                           multiply = 0.1;
                         });
@@ -108,14 +137,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     },
                     decoration: InputDecoration(
                         hintText: "0",
-                        contentPadding: EdgeInsets.only(left: 0),
+                        contentPadding: const EdgeInsets.only(left: 0),
                         hintStyle: TextStyle(fontSize: amountFieldSize),
                         border: InputBorder.none),
-                    // decoration: const InputDecoration(
-                    //   border: OutlineInputBorder(),
-                    //   contentPadding: EdgeInsets.all(16),
-                    //   hintText: "0",
-                    // ),
                     controller: _amountController,
                   )),
             ),

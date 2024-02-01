@@ -1,7 +1,9 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 double iconWidth = 75;
-double iconHeight = 80;
+double iconHeight = 85;
 
-const Color backgroundColor = Color.fromRGBO(255, 255, 255, 1);
-const Color upiIDBorderColor = Color.fromRGBO(189, 192, 190, 1);
+const TextStyle bottomTextStyle = TextStyle(
+    color: Color.fromRGBO(19, 19, 19, 1), fontWeight: FontWeight.w500);
+
+const gpayBlue = Color.fromRGBO(30, 112, 236, 1);
