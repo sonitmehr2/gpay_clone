@@ -68,3 +68,25 @@ String getCurrentDate() {
   final DateFormat formatter = DateFormat('MMMM dd, yyyy h:mm a');
   return formatter.format(date);
 }
+
+String urlEncode(String upiID) {
+  return upiID.replaceAll("/", "%2F");
+}
+
+String generateRandomEmail() {
+  // Generate a random string for the username part of the email
+  String username = Random.secure().nextInt(10000).toString();
+
+  // Choose a random domain from a list of common email domains
+  List<String> domains = [
+    'gmail.com',
+    'yahoo.com',
+    'hotmail.com',
+    'outlook.com',
+    'example.com'
+  ];
+  String domain = domains[Random.secure().nextInt(domains.length)];
+
+  // Return the generated email address
+  return '$username@$domain';
+}

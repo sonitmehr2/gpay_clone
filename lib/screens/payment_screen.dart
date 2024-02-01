@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gpay_clone/models/user_model.dart' as model;
-import 'package:gpay_clone/resources/constants.dart';
 import 'package:gpay_clone/screens/payment_succesful_screen.dart';
 import 'package:gpay_clone/services/firestore_methods.dart';
 import 'package:gpay_clone/widgets/user_profile_icon.dart';
@@ -12,21 +12,20 @@ import '../providers/user_providers.dart';
 import '../resources/utils.dart';
 
 class PaymentScreen extends StatefulWidget {
-  PaymentScreen({super.key});
+  final String scanID;
+  const PaymentScreen({super.key, required this.scanID});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final TextEditingController _nameController =
-      TextEditingController(text: 'Paying SONIT MEHROTRA');
+  TextEditingController _nameController = TextEditingController();
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  final TextEditingController _upiIDController =
-      TextEditingController(text: recieverUpi);
+  final TextEditingController _upiIDController = TextEditingController();
 
-  final TextEditingController _bankingNameController =
-      TextEditingController(text: 'Banking name: SONIT MEHROTRA');
+  final TextEditingController _bankingNameController = TextEditingController();
 
   final TextEditingController _amountController = TextEditingController();
   double multiply = 0.1;
@@ -53,6 +52,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
     } else {
       showSnackBar(context, "UPI ID Not Found");
     }
+  }
+
+  Future<void> getRecieverDetails() async {
+    String upiID = "";
+
+    DocumentReference scanLinkDoc =
+        _firebaseFirestore.collection("scan_id_link").doc(widget.scanID);
+    DocumentSnapshot scanLinkSnap = await scanLinkDoc.get();
+    upiID = scanLinkSnap['upiID'];
+
+    DocumentReference userDoc =
+        _firebaseFirestore.collection("users").doc(upiID);
+    DocumentSnapshot userDocSnap = await userDoc.get();
+
+    // setState(() {
+    _upiIDController.text = "hello";
+    _nameController.text = userDocSnap['name'];
+    _bankingNameController.text = userDocSnap['name'];
+    // });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getRecieverDetails();
   }
 
   @override

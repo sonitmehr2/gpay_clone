@@ -20,13 +20,14 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _bankingNameController = TextEditingController();
+  final TextEditingController _payingNameController = TextEditingController();
   final TextEditingController _upiIDController = TextEditingController();
 
-  Future<void> signUpUser(
-      String email, String password, String name, String upiID) async {
-    await FirebaseAuthMehthods()
-        .signUpUser(email, password, name, upiID, "Sign-in Screen");
+  Future<void> signUpUser(String email, String password, String bankingName,
+      String upiID, String payingName) async {
+    await FirebaseAuthMehthods().signUpUser(
+        email, password, bankingName, upiID, "Sign-in Screen", payingName);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => HomeScreen()));
   }
@@ -45,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _nameController.dispose();
+    _bankingNameController.dispose();
     _upiIDController.dispose();
   }
 
@@ -76,9 +77,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Padding(
               padding: EdgeInsets.all(8.0),
               child: TextField(
-                controller: _nameController,
+                controller: _bankingNameController,
                 decoration: InputDecoration(
-                    hintText: "Name", border: OutlineInputBorder()),
+                    hintText: "Banking Name", border: OutlineInputBorder()),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                controller: _payingNameController,
+                decoration: InputDecoration(
+                    hintText: "Paying Name", border: OutlineInputBorder()),
               ),
             ),
             Padding(
@@ -93,8 +102,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 onPressed: () async => signUpUser(
                     _emailController.text,
                     _passwordController.text,
-                    _nameController.text,
-                    _upiIDController.text),
+                    _bankingNameController.text,
+                    _upiIDController.text,
+                    _payingNameController.text),
                 child: const Text('Sign Up'))
           ],
         ),

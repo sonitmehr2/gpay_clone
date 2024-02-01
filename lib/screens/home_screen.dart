@@ -5,6 +5,7 @@ import 'package:gpay_clone/resources/utils.dart';
 import 'package:gpay_clone/screens/home_screen_drawer.dart';
 import 'package:gpay_clone/screens/payment_screen.dart';
 import 'package:gpay_clone/screens/recent_people.dart';
+import 'package:gpay_clone/screens/scanner_screen.dart';
 import 'package:gpay_clone/screens/transaction_history.dart';
 import 'package:gpay_clone/styles/home_screen_styles.dart';
 import 'package:gpay_clone/widgets/arrow_list_tile.dart';
@@ -152,7 +153,7 @@ Widget iconsFirstRow(BuildContext context) {
             width: iconWidth,
             height: iconHeight,
             child: callToActionIcon(context, "assets/images/scan_icon.PNG",
-                "Scan any QR Code", (context) => PaymentScreen())),
+                "Scan any QR Code", (context) => ScanPage())),
         SizedBox(
             width: iconWidth,
             height: iconHeight,
@@ -184,7 +185,7 @@ Widget iconsSecondRow(BuildContext context) {
             width: iconWidth,
             height: iconHeight,
             child: callToActionIcon(context, "assets/images/pay_to_upi_id.PNG",
-                "Pay to UPI ID", (context) => PaymentScreen())),
+                "Pay to UPI ID", (context) => const SizedBox.shrink())),
         SizedBox(
             width: iconWidth,
             height: iconHeight,
