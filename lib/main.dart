@@ -21,6 +21,14 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
         providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
         child: MaterialApp(
+          theme: ThemeData(
+            textTheme: TextTheme(
+              bodyLarge: TextStyle(fontFamily: 'OpenSans'),
+              bodyMedium: TextStyle(fontFamily: 'OpenSans'),
+              bodySmall: TextStyle(fontFamily: 'OpenSans'),
+              // Add more text styles as needed
+            ),
+          ),
           // home: SignInScreen(),
           home: (FirebaseAuth.instance.currentUser == null)
               ? SignInScreen()

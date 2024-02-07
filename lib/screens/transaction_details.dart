@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gpay_clone/services/firestore_methods.dart';
+import 'package:gpay_clone/widgets/app_bar_transaction_details.dart';
 import 'package:gpay_clone/widgets/transaction_details_card.dart';
 
 import '../models/transaction_model.dart';
@@ -10,10 +11,14 @@ import '../resources/colors.dart';
 class TransactionDetails extends StatefulWidget {
   final String sender_id;
   final String reciever_id;
+  final String reciever_hex_color;
+  final String reciever_name;
   const TransactionDetails({
     super.key,
     required this.sender_id,
     required this.reciever_id,
+    required this.reciever_hex_color,
+    required this.reciever_name,
   });
 
   @override
@@ -48,7 +53,10 @@ class _TransactionDetailsState extends State<TransactionDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Transaction Details')),
+      appBar: AppBarTransactionDetails(
+        name: widget.reciever_name,
+        hexColor: widget.reciever_hex_color,
+      ),
       body: (isLoading)
           ? const Center(
               child: CircularProgressIndicator(

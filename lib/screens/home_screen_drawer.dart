@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:gpay_clone/screens/register_new_user_screen.dart';
 import 'package:gpay_clone/screens/scanner_screen.dart';
 
 import '../main.dart';

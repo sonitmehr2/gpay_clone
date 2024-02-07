@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gpay_clone/resources/utils.dart';
@@ -41,9 +43,8 @@ class _ScanPageState extends State<ScanPage> {
       child: Stack(
         children: [
           Container(
-            margin: EdgeInsets.only(bottom: 200),
             child: Scaffold(
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.transparent,
               body: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
@@ -56,19 +57,19 @@ class _ScanPageState extends State<ScanPage> {
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 580),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25))),
-            // child: Column(children: [
-            //   Row(children: [
-            //     Image.asset('images/contact_bar.jpg'),
-            //   ],)
-            // ],),
-          ),
+          // Container(
+          //   margin: EdgeInsets.only(top: 580),
+          //   decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.only(
+          //           topLeft: Radius.circular(25),
+          //           topRight: Radius.circular(25))),
+          //   // child: Column(children: [
+          //   //   Row(children: [
+          //   //     Image.asset('images/contact_bar.jpg'),
+          //   //   ],)
+          //   // ],),
+          // ),
           // Positioned(
           //     left: 15,
           //     bottom: 25,
@@ -147,20 +148,39 @@ class _ScanPageState extends State<ScanPage> {
     setState(() => this.controller = controller);
     controller.scannedDataStream.listen((scanData) async {
       result = scanData;
-      id = '${result!.code}';
-      if (widget.readQr) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => RegisterNewUserScreen(
-            scanID: urlEncode(id),
-          ),
-        ));
-      } else {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => PaymentScreen(
-            scanID: urlEncode(id),
-          ),
-        ));
+      if (result != null && scanData != null) {
+        id = '${result!.code}';
+        if (widget.readQr) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => RegisterNewUserScreen(
+              scanID: urlEncode(id),
+            ),
+          ));
+        } else {
+          try {
+            String upiID = "";
+            final FirebaseFirestore firebaseFirestore =
+                FirebaseFirestore.instance;
+
+            DocumentReference scanLinkDoc =
+                firebaseFirestore.collection("scan_id_link").doc(urlEncode(id));
+            DocumentSnapshot scanLinkSnap = await scanLinkDoc.get();
+            if (scanLinkSnap.exists) {
+              upiID = scanLinkSnap['upiID'];
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => PaymentScreen(
+                  upiID: upiID,
+                ),
+              ));
+            } else {
+              throw Exception();
+            }
+          } on Exception catch (e) {
+            showSnackBar(context, "User Not Found");
+          }
+        }
       }
+
       // Navigator.of(context).push(MaterialPageRoute(
       //   builder: (context) => PaymentPage(),
       // ));

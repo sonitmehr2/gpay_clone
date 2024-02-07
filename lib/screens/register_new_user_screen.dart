@@ -62,15 +62,6 @@ class RegisterNewUserScreen extends StatelessWidget {
               padding: EdgeInsets.all(8.0),
               child: TextField(
                 readOnly: true,
-                onTap: () async {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const ScanPage(readQr: true)));
-                  // if (result != null && result is String) {
-                  //   _upiIDController.text = result;
-                  // }
-                },
                 controller: TextEditingController(text: scanID),
                 decoration: const InputDecoration(
                     hintText: "ScanID", border: OutlineInputBorder()),

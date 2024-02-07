@@ -3,24 +3,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gpay_clone/models/user_model.dart' as model;
-import 'package:gpay_clone/screens/payment_succesful_screen.dart';
+import 'package:gpay_clone/screens/payment_successful_screen_wrapper.dart';
 import 'package:gpay_clone/services/firestore_methods.dart';
-import 'package:gpay_clone/widgets/user_profile_icon.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user_providers.dart';
+import '../resources/colors.dart';
 import '../resources/utils.dart';
 
 class PaymentScreen extends StatefulWidget {
-  final String scanID;
-  const PaymentScreen({super.key, required this.scanID});
+  final String upiID;
+  const PaymentScreen({super.key, required this.upiID});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  TextEditingController _nameController = TextEditingController();
+  final TextEditingController _payingNameController =
+      TextEditingController(text: "S");
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   final TextEditingController _upiIDController = TextEditingController();
@@ -28,6 +29,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   final TextEditingController _bankingNameController = TextEditingController();
 
   final TextEditingController _amountController = TextEditingController();
+  Color receiverColor = Colors.green;
   double multiply = 0.1;
 
   Future<void> _addTransaction(
@@ -36,7 +38,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         sender_id,
         reciever_id,
         _amountController.text,
-        _nameController.text,
+        _bankingNameController.text,
         senderHexColor);
     if (check) {
       UserProvider _userProvider = Provider.of(context, listen: false);
@@ -44,9 +46,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => PaymentSuccessfulScreen(
+              builder: (context) => PaymentSuccessWrapper(
                     amount: _amountController.text,
-                    bankingName: _nameController.text,
+                    payingName: _payingNameController.text,
                     upiID: _upiIDController.text,
                   )));
     } else {
@@ -55,21 +57,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<void> getRecieverDetails() async {
-    String upiID = "";
-
-    DocumentReference scanLinkDoc =
-        _firebaseFirestore.collection("scan_id_link").doc(widget.scanID);
-    DocumentSnapshot scanLinkSnap = await scanLinkDoc.get();
-    upiID = scanLinkSnap['upiID'];
-
     DocumentReference userDoc =
-        _firebaseFirestore.collection("users").doc(upiID);
+        _firebaseFirestore.collection("users").doc(widget.upiID);
     DocumentSnapshot userDocSnap = await userDoc.get();
 
     // setState(() {
-    _upiIDController.text = "hello";
-    _nameController.text = userDocSnap['name'];
-    _bankingNameController.text = userDocSnap['name'];
+    _upiIDController.text = widget.upiID;
+    _payingNameController.text = "Paying ${userDocSnap['paying_name']}";
+    _bankingNameController.text = "Banking Name : ${userDocSnap['name']}";
+    receiverColor = hexToColor(userDocSnap['hexColor']);
     // });
   }
 
@@ -86,25 +82,49 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     double fullScreenWidth = MediaQuery.of(context).size.width;
     double fullScreenHeight = MediaQuery.of(context).size.height;
-    double heightOfTextField = 25;
+    double heightOfTextField = 23;
     double amountFieldSize = 55;
     double variableMaxwidth = fullScreenWidth * multiply;
     Color backgroundColor = hexToColor(user.hexColor);
 
     return Scaffold(
-      floatingActionButton: ElevatedButton(
-        onPressed: () async => await _addTransaction(
-            user.uid, _upiIDController.text, user.hexColor),
-        child: const Icon(Icons.arrow_right_alt_outlined),
+      floatingActionButton: SizedBox(
+        height: 50,
+        width: 55,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: blueButtonColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Button border radius
+            ),
+          ),
+          onPressed: () async => await _addTransaction(
+              user.uid, _upiIDController.text, user.hexColor),
+          child: const Icon(Icons.arrow_forward),
+        ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            UserProfileIcon(
-              backgroundColor: backgroundColor,
-              radius: 20,
-              name: user.name,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: SizedBox(
+                width: 60,
+                child: CircleAvatar(
+                  radius: 27,
+                  backgroundColor: backgroundColor,
+                  child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        _payingNameController.text
+                            .substring(0, 1)
+                            .toUpperCase(),
+                        style:
+                            const TextStyle(fontSize: 30, color: Colors.white),
+                      )),
+                ),
+              ),
             ),
             SizedBox(
               width: fullScreenWidth * 0.8,
@@ -113,7 +133,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 focusNode: FocusNode(),
                 decoration: const InputDecoration(border: InputBorder.none),
                 textAlign: TextAlign.center,
-                controller: _nameController,
+                controller: _payingNameController,
               ),
             ),
             SizedBox(
@@ -144,6 +164,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   // height: fullScreenHeight * 0.1,
                   // width: fullScreenWidth * 0.9,
                   child: TextFormField(
+                    autofocus: true,
                     textAlign: TextAlign.center,
                     textAlignVertical: TextAlignVertical.center,
                     keyboardType: TextInputType.phone,
@@ -168,6 +189,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     controller: _amountController,
                   )),
             ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+              decoration: BoxDecoration(
+                  color: greyAddNote, borderRadius: BorderRadius.circular(10)),
+              child: const Text('Add a note'),
+            )
           ],
         ),
       ),

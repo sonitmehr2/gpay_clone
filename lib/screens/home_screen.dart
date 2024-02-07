@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gpay_clone/resources/utils.dart';
 import 'package:gpay_clone/screens/home_screen_drawer.dart';
 import 'package:gpay_clone/screens/payment_screen.dart';
+import 'package:gpay_clone/screens/payment_successful_screen_wrapper.dart';
 import 'package:gpay_clone/screens/recent_people.dart';
 import 'package:gpay_clone/screens/scanner_screen.dart';
 import 'package:gpay_clone/screens/transaction_history.dart';
@@ -62,12 +63,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         horizontal: 24, vertical: 16.0),
                     child: Row(
                       children: [
-                        const Expanded(child: CustomSearchBar()),
+                        const SizedBox(
+                            width: 280, height: 48, child: CustomSearchBar()),
                         GestureDetector(
                           onTap: () => _scaffoldKey.currentState?.openDrawer(),
                           child: UserProfileIcon(
                             backgroundColor: iconbackgroundColor,
-                            radius: 20,
+                            radius: 17,
                             name: user.name,
                           ),
                         )
@@ -157,8 +159,14 @@ Widget iconsFirstRow(BuildContext context) {
         SizedBox(
             width: iconWidth,
             height: iconHeight,
-            child: callToActionIcon(context, "assets/images/pay_contacts.PNG",
-                "Pay contacts", (context) => const SizedBox.shrink())),
+            child: callToActionIcon(
+                context,
+                "assets/images/pay_contacts.PNG",
+                "Pay contacts",
+                (context) => PaymentSuccessWrapper(
+                    amount: "20",
+                    payingName: "BANKING NAME : Enzo Shop",
+                    upiID: "Enzo@paytm"))),
         SizedBox(
             width: iconWidth,
             height: iconHeight,
