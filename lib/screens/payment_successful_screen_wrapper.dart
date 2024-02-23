@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:gpay_clone/resources/utils.dart';
 import 'package:gpay_clone/screens/payment_succesful_screen.dart';
 import 'package:gpay_clone/screens/tick_animation_screen.dart';
 
@@ -21,16 +23,15 @@ class PaymentSuccessWrapper extends StatefulWidget {
 
 class _PaymentSuccessWrapperState extends State<PaymentSuccessWrapper> {
   bool isAnimation = true;
+  final AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     // TODO: implement initState
+    playSound();
     super.initState();
-    Timer(Duration(milliseconds: 2100), () {
-      setState(() {
-        isAnimation = false;
-      });
-    });
+
+    tickAnimation();
   }
 
   @override
@@ -58,5 +59,17 @@ class _PaymentSuccessWrapperState extends State<PaymentSuccessWrapper> {
         //     payingName: widget.payingName,
         //     upiID: widget.upiID),
         );
+  }
+
+  void tickAnimation() {
+    Timer(Duration(milliseconds: 2600), () {
+      setState(() {
+        isAnimation = false;
+      });
+    });
+  }
+
+  Future<void> playSound() async {
+    await audioPlayer.play(AssetSource('audio/success_sound.mp3'));
   }
 }

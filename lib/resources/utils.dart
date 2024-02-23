@@ -91,3 +91,15 @@ String generateRandomEmail() {
   // Return the generated email address
   return '$username@$domain';
 }
+
+double toDouble(String val) {
+  if (val == "") return 0;
+  try {
+    return double.parse(val);
+  } catch (e) {}
+  return 0;
+}
+
+DateTime stringToDateTime(String dateString) {
+  return DateTime.parse(dateString);
+}

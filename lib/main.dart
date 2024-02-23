@@ -21,6 +21,7 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
         providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             textTheme: TextTheme(
               bodyLarge: TextStyle(fontFamily: 'OpenSans'),

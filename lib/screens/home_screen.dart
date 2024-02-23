@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:gpay_clone/resources/utils.dart';
 import 'package:gpay_clone/screens/home_screen_drawer.dart';
-import 'package:gpay_clone/screens/payment_screen.dart';
 import 'package:gpay_clone/screens/payment_successful_screen_wrapper.dart';
 import 'package:gpay_clone/screens/recent_people.dart';
 import 'package:gpay_clone/screens/scanner_screen.dart';
@@ -220,7 +220,9 @@ Widget iconsSecondRow(BuildContext context) {
 Widget callToActionIcon(BuildContext context, String imageAsset, String text,
     Widget Function(BuildContext) builder) {
   return GestureDetector(
-    onTap: () {
+    onTap: () async {
+      final AudioPlayer audioPlayer = AudioPlayer();
+
       Navigator.push(context, MaterialPageRoute(builder: builder));
     },
     child: Column(

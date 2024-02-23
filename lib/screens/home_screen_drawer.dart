@@ -5,6 +5,7 @@ import 'package:gpay_clone/screens/scanner_screen.dart';
 
 import '../main.dart';
 import '../services/firebase_auth_mehtods.dart';
+import 'custom_payment_fields_page.dart';
 
 class HomeScreenDrawer extends StatelessWidget {
   const HomeScreenDrawer({super.key});
@@ -62,6 +63,15 @@ class HomeScreenDrawer extends StatelessWidget {
             ),
             onTap: () async => await logOut(context),
           ),
+          ListTile(
+              title: const Text('Custom'),
+              onTap: () {
+                // Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CustomPaymentFieldsPage()));
+              }),
         ],
       ),
     );

@@ -13,7 +13,16 @@ import '../resources/utils.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String upiID;
-  const PaymentScreen({super.key, required this.upiID});
+  final bool isCustomTransaction;
+  final String payingName;
+  final String bankingName;
+  const PaymentScreen({
+    super.key,
+    required this.upiID,
+    this.isCustomTransaction = false,
+    this.payingName = "",
+    this.bankingName = "",
+  });
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -31,15 +40,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
   final TextEditingController _amountController = TextEditingController();
   Color receiverColor = Colors.green;
   double multiply = 0.1;
-
+  String recieverIconLetter = "S";
   Future<void> _addTransaction(
       String sender_id, String reciever_id, String senderHexColor) async {
-    bool check = await FireStoreMethods().addTransactionDetails(
-        sender_id,
-        reciever_id,
-        _amountController.text,
-        _bankingNameController.text,
-        senderHexColor);
+    bool check = false;
+    if (widget.isCustomTransaction) {
+      check = true;
+    } else {
+      check = await FireStoreMethods().addTransactionDetails(
+          sender_id,
+          reciever_id,
+          _amountController.text,
+          _bankingNameController.text,
+          senderHexColor);
+    }
     if (check) {
       UserProvider _userProvider = Provider.of(context, listen: false);
       _userProvider.refreshUser();
@@ -66,6 +80,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _payingNameController.text = "Paying ${userDocSnap['paying_name']}";
     _bankingNameController.text = "Banking Name : ${userDocSnap['name']}";
     receiverColor = hexToColor(userDocSnap['hexColor']);
+
+    recieverIconLetter =
+        userDocSnap['paying_name'].substring(0, 1).toUpperCase();
     // });
   }
 
@@ -73,7 +90,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getRecieverDetails();
+    loadDetails();
   }
 
   @override
@@ -85,7 +102,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
     double heightOfTextField = 23;
     double amountFieldSize = 55;
     double variableMaxwidth = fullScreenWidth * multiply;
-    Color backgroundColor = hexToColor(user.hexColor);
 
     return Scaffold(
       floatingActionButton: SizedBox(
@@ -113,13 +129,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 width: 60,
                 child: CircleAvatar(
                   radius: 27,
-                  backgroundColor: backgroundColor,
+                  backgroundColor: receiverColor,
                   child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        _payingNameController.text
-                            .substring(0, 1)
-                            .toUpperCase(),
+                        recieverIconLetter,
                         style:
                             const TextStyle(fontSize: 30, color: Colors.white),
                       )),
@@ -199,5 +213,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> loadDetails() async {
+    if (widget.isCustomTransaction == false) {
+      await getRecieverDetails();
+    } else {
+      recieverIconLetter = widget.payingName.substring(0, 1).toUpperCase();
+      _payingNameController.text = "Paying ${widget.payingName}";
+
+      _bankingNameController.text = "Banking Name : ${widget.bankingName}";
+    }
   }
 }
