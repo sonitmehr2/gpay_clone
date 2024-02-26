@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class TickAnimationScreen extends StatelessWidget {
+class TickAnimationScreen extends StatefulWidget {
   const TickAnimationScreen({super.key});
 
+  @override
+  State<TickAnimationScreen> createState() => _TickAnimationScreenState();
+}
+
+class _TickAnimationScreenState extends State<TickAnimationScreen> {
   @override
   Widget build(BuildContext context) {
     return Center(

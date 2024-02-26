@@ -10,11 +10,13 @@ class PaymentSuccessWrapper extends StatefulWidget {
   final String amount;
   final String payingName;
   final String upiID;
+  final String bankingName;
   const PaymentSuccessWrapper({
     super.key,
     required this.amount,
     required this.payingName,
     required this.upiID,
+    required this.bankingName,
   });
 
   @override
@@ -48,9 +50,11 @@ class _PaymentSuccessWrapperState extends State<PaymentSuccessWrapper> {
         if (!isAnimation)
           Expanded(
             child: PaymentSuccessfulScreen(
-                amount: widget.amount,
-                payingName: widget.payingName,
-                upiID: widget.upiID),
+              amount: widget.amount,
+              payingName: widget.payingName,
+              upiID: widget.upiID,
+              bankingName: widget.bankingName,
+            ),
           ),
       ],
     )

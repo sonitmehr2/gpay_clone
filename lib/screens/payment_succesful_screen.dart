@@ -8,11 +8,13 @@ class PaymentSuccessfulScreen extends StatelessWidget {
   final String amount;
   final String payingName;
   final String upiID;
+  final String bankingName;
   const PaymentSuccessfulScreen({
     super.key,
     required this.amount,
     required this.payingName,
     required this.upiID,
+    required this.bankingName,
   });
 
   @override
@@ -33,7 +35,7 @@ class PaymentSuccessfulScreen extends StatelessWidget {
           style: paidToStyle,
         ),
         Padding(
-          padding: const EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(3.0),
           child: Text(
             upiID,
             style: upiIDStyle,
@@ -42,9 +44,12 @@ class PaymentSuccessfulScreen extends StatelessWidget {
         const SizedBox(
           height: 100,
         ),
-        Text(
-          dateTime,
-          style: dateTimeStyle,
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Text(
+            dateTime,
+            style: dateTimeStyle,
+          ),
         ),
         Text(
           "UPI transaction ID: 372400$transactionID",

@@ -36,7 +36,7 @@ class CustomPaymentFieldsPage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => PaymentScreen(
-                                upiID: "",
+                                upiID: _bankingNameController.text,
                                 isCustomTransaction: true,
                                 bankingName: _bankingNameController.text,
                                 payingName: _payingNameController.text,
