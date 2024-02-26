@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:gpay_clone/resources/utils.dart';
 import 'package:gpay_clone/screens/home_screen.dart';
 import 'package:gpay_clone/screens/signup_screen.dart';
 import 'package:gpay_clone/services/firebase_auth_mehtods.dart';

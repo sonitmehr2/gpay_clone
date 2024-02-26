@@ -15,8 +15,9 @@ class FirebaseAuthMehthods {
     return true;
   }
 
-  Future<void> signUpUser(String email, String password, String name,
-      String upiID, String createdBy) async {
+  Future<void> signUpUser(String email, String password, String bankingName,
+      String upiID, String createdBy, String payingName,
+      {String scanID = ""}) async {
     UserCredential credentials = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
     String uid = credentials.user!.uid;
@@ -26,13 +27,22 @@ class FirebaseAuthMehthods {
       "password": password,
       "created_by": createdBy
     });
+    if (scanID != "") {
+      await _firebaseFirestore.collection("scan_id_link").doc(scanID).set({
+        "upiID": upiID,
+        "email": email,
+        "password": password,
+        "created_by": createdBy,
+      });
+    }
     DocumentReference usersDoc =
         _firebaseFirestore.collection("users").doc(upiID);
     await usersDoc.set({
       "uid": uid,
       "email": email,
       "password": password,
-      "name": name,
+      "name": bankingName,
+      "paying_name": payingName,
       "upiID": upiID,
       "hexColor": randomHex(),
       "created_by": createdBy

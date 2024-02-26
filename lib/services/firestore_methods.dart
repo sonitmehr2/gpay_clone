@@ -20,6 +20,15 @@ class FireStoreMethods {
     return await model.User.fromSnapshot(userDocSnap, recentPeopleSnap);
   }
 
+  Future<model.User> getUserDetailsFromUpiID(String upiID) async {
+    DocumentReference userDoc =
+        _firebaseFirestore.collection("users").doc(upiID);
+    DocumentSnapshot userDocSnap = await userDoc.get();
+    QuerySnapshot recentPeopleSnap =
+        await userDoc.collection("recent_people_list").get();
+    return await model.User.fromSnapshot(userDocSnap, recentPeopleSnap);
+  }
+
   Future<bool> addTransactionDetails(String sender_id, String reciever_id,
       String amount, String bankingName, String hexColor) async {
     String time = DateTime.now().toString();

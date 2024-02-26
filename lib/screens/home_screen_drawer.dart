@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:gpay_clone/screens/scanner_screen.dart';
 
 import '../main.dart';
 import '../services/firebase_auth_mehtods.dart';
+import 'custom_payment_fields_page.dart';
 
 class HomeScreenDrawer extends StatelessWidget {
   const HomeScreenDrawer({super.key});
@@ -34,7 +36,19 @@ class HomeScreenDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('Edit User'),
+            title: const Text('Register New User'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ScanPage(
+                            readQr: true,
+                          )));
+            },
+          ),
+          ListTile(
+            title: const Text('Edit User'),
             onTap: () {
               // Handle item tap
               Navigator.pop(context); // Close the drawer
@@ -49,6 +63,15 @@ class HomeScreenDrawer extends StatelessWidget {
             ),
             onTap: () async => await logOut(context),
           ),
+          ListTile(
+              title: const Text('Custom'),
+              onTap: () {
+                // Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CustomPaymentFieldsPage()));
+              }),
         ],
       ),
     );

@@ -25,15 +25,19 @@ class RecentPeople extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => TransactionDetails(
-                            sender_id: user.uid,
-                            reciever_id: user.recentPeopleList[index].uid)));
+                              sender_id: user.uid,
+                              reciever_id: user.recentPeopleList[index].uid,
+                              reciever_hex_color:
+                                  user.recentPeopleList[index].hexColor,
+                              reciever_name: user.recentPeopleList[index].name,
+                            )));
               },
               child: RecentPeopleIcon(
                 backgroundColor:
                     hexToColor(user.recentPeopleList[index].hexColor),
                 name: user.recentPeopleList[index].name,
                 radius: 30,
-                width: 70,
+                width: 90,
                 height: 100,
               ));
         });

@@ -3,8 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:gpay_clone/resources/utils.dart';
 import 'package:gpay_clone/screens/home_screen_drawer.dart';
-import 'package:gpay_clone/screens/payment_screen.dart';
+import 'package:gpay_clone/screens/payment_successful_screen_wrapper.dart';
 import 'package:gpay_clone/screens/recent_people.dart';
+import 'package:gpay_clone/screens/scanner_screen.dart';
+import 'package:gpay_clone/screens/under_development.dart';
 import 'package:gpay_clone/screens/transaction_history.dart';
 import 'package:gpay_clone/styles/home_screen_styles.dart';
 import 'package:gpay_clone/widgets/arrow_list_tile.dart';
@@ -61,12 +63,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         horizontal: 24, vertical: 16.0),
                     child: Row(
                       children: [
-                        const Expanded(child: CustomSearchBar()),
+                        const SizedBox(
+                            width: 280, height: 48, child: CustomSearchBar()),
                         GestureDetector(
                           onTap: () => _scaffoldKey.currentState?.openDrawer(),
                           child: UserProfileIcon(
                             backgroundColor: iconbackgroundColor,
-                            radius: 20,
+                            radius: 17,
                             name: user.name,
                           ),
                         )
@@ -152,22 +155,30 @@ Widget iconsFirstRow(BuildContext context) {
             width: iconWidth,
             height: iconHeight,
             child: callToActionIcon(context, "assets/images/scan_icon.PNG",
-                "Scan any QR Code", (context) => PaymentScreen())),
+                "Scan any QR Code", (context) => const ScanPage())),
         SizedBox(
             width: iconWidth,
             height: iconHeight,
-            child: callToActionIcon(context, "assets/images/pay_contacts.PNG",
-                "Pay contacts", (context) => const SizedBox.shrink())),
+            child: callToActionIcon(
+                context,
+                "assets/images/pay_contacts.PNG",
+                "Pay contacts",
+                (context) => const PaymentSuccessWrapper(
+                      amount: "20",
+                      payingName: "BANKING NAME : Enzo Shop",
+                      upiID: "Enzo@paytm",
+                      bankingName: "Enzo Shop",
+                    ))),
         SizedBox(
             width: iconWidth,
             height: iconHeight,
             child: callToActionIcon(context, "assets/images/pay_to_phone.PNG",
-                "Pay to Phone ", (context) => const SizedBox.shrink())),
+                "Pay to Phone ", (context) => const UnderDevelopmentScreen())),
         SizedBox(
             width: iconWidth,
             height: iconHeight,
             child: callToActionIcon(context, "assets/images/bank_transfer.PNG",
-                "Bank Transfer", (context) => const SizedBox.shrink())),
+                "Bank Transfer", (context) => const UnderDevelopmentScreen())),
       ],
     ),
   );
@@ -184,17 +195,17 @@ Widget iconsSecondRow(BuildContext context) {
             width: iconWidth,
             height: iconHeight,
             child: callToActionIcon(context, "assets/images/pay_to_upi_id.PNG",
-                "Pay to UPI ID", (context) => PaymentScreen())),
+                "Pay to UPI ID", (context) => const UnderDevelopmentScreen())),
         SizedBox(
             width: iconWidth,
             height: iconHeight,
             child: callToActionIcon(context, "assets/images/self_transder.PNG",
-                "Self transfer", (context) => const SizedBox.shrink())),
+                "Self transfer", (context) => const UnderDevelopmentScreen())),
         SizedBox(
             width: iconWidth,
             height: iconHeight,
             child: callToActionIcon(context, "assets/images/pay_bills.PNG",
-                "Pay bills", (context) => const SizedBox.shrink())),
+                "Pay bills", (context) => const UnderDevelopmentScreen())),
         SizedBox(
             width: iconWidth,
             height: iconHeight,
@@ -202,7 +213,7 @@ Widget iconsSecondRow(BuildContext context) {
                 context,
                 "assets/images/mobile_recharge.PNG",
                 "Mobile Recharge",
-                (context) => const SizedBox.shrink())),
+                (context) => const UnderDevelopmentScreen())),
       ],
     ),
   );
@@ -211,7 +222,7 @@ Widget iconsSecondRow(BuildContext context) {
 Widget callToActionIcon(BuildContext context, String imageAsset, String text,
     Widget Function(BuildContext) builder) {
   return GestureDetector(
-    onTap: () {
+    onTap: () async {
       Navigator.push(context, MaterialPageRoute(builder: builder));
     },
     child: Column(
