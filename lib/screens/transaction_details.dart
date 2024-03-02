@@ -4,9 +4,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:gpay_clone/resources/utils.dart';
+import 'package:gpay_clone/screens/payment_screen.dart';
+import 'package:gpay_clone/screens/under_development.dart';
 import 'package:gpay_clone/services/firestore_methods.dart';
 import 'package:gpay_clone/widgets/app_bar_transaction_details.dart';
 import 'package:gpay_clone/widgets/transaction_details_card.dart';
+import 'package:gpay_clone/widgets/transaction_screen_call_to_action.dart';
 
 import '../models/transaction_model.dart';
 import '../resources/colors.dart';
@@ -67,6 +70,20 @@ class _TransactionDetailsState extends State<TransactionDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      persistentFooterButtons: [
+        SizedBox(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TransactionScreenCallToAction(
+                  onPressed: () => onPressPay(), text: "Pay"),
+              TransactionScreenCallToAction(
+                  onPressed: () => onPressRequest(), text: "Request"),
+            ],
+          ),
+        ),
+      ],
       appBar: AppBarTransactionDetails(
         duration: numberOfDays.toString(),
         total: totalTransactionAmount.toStringAsFixed(2),
@@ -113,5 +130,17 @@ class _TransactionDetailsState extends State<TransactionDetails> {
       return max(1, difference.inDays);
     }
     return 2;
+  }
+
+  void onPressPay() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PaymentScreen(upiID: widget.reciever_id)));
+  }
+
+  void onPressRequest() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => UnderDevelopmentScreen()));
   }
 }

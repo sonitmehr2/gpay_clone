@@ -50,34 +50,13 @@ class _ScanPageState extends State<ScanPage> {
                 children: <Widget>[
                   buildQrView(context),
                   Positioned(bottom: 50, child: buildResult()),
-                  Positioned(top: 60, child: scanAnyQR()),
+                  // Positioned(top: 60, child: scanAnyQR()),
 
                   //child: Text('Hi'),
                 ],
               ),
             ),
           ),
-          // Container(
-          //   margin: EdgeInsets.only(top: 580),
-          //   decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.only(
-          //           topLeft: Radius.circular(25),
-          //           topRight: Radius.circular(25))),
-          //   // child: Column(children: [
-          //   //   Row(children: [
-          //   //     Image.asset('images/contact_bar.jpg'),
-          //   //   ],)
-          //   // ],),
-          // ),
-          // Positioned(
-          //     left: 15,
-          //     bottom: 25,
-          //     child: Image.asset(
-          //       'images/contact_bar.jpg',
-          //       width: 360,
-          //       height: 300,
-          //     )),
         ],
       ),
     );
@@ -134,12 +113,13 @@ class _ScanPageState extends State<ScanPage> {
         onQRViewCreated: (controller) => onQRViewCreated(controller, context),
 
         overlay: QrScannerOverlayShape(
-          borderColor: Colors.blue,
+          borderColor: Colors.white,
+          // overlayColor: Colors.red,
           borderWidth: 10,
-          borderLength: 100,
-          borderRadius: 10,
-          //cutOutBottomOffset: 50,
-          cutOutSize: MediaQuery.of(context).size.width * 0.55,
+          borderLength: 40,
+          borderRadius: 20,
+          cutOutBottomOffset: 70,
+          cutOutSize: MediaQuery.of(context).size.width * 0.8,
         ),
         //onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
       );
@@ -189,3 +169,72 @@ class _ScanPageState extends State<ScanPage> {
     controller.resumeCamera();
   }
 }
+
+// class QRScannerOverlayPainter extends CustomPainter {
+//   final QrScannerOverlayShape overlayShape = QrScannerOverlayShape(
+//     borderColor: Colors.blue,
+//     borderWidth: 10,
+//     borderLength: 40,
+//     borderRadius: 20,
+//     cutOutBottomOffset: 70,
+//   );
+
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     final Paint paint = Paint()
+//       ..color = overlayShape.borderColor!
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = overlayShape.borderWidth!;
+
+//     final Rect rect = Rect.fromLTWH(
+//       0,
+//       0,
+//       size.width,
+//       size.height,
+//     );
+
+//     canvas.drawRect(rect, paint);
+
+//     final double cutOutSize = size.width * 0.8; // Adjust as needed
+//     final double left = (size.width - cutOutSize) / 2;
+//     final double top = (size.height - cutOutSize) / 2;
+
+//     final Rect innerRect = Rect.fromLTWH(
+//       left,
+//       top,
+//       cutOutSize,
+//       cutOutSize,
+//     );
+
+//     final RRect cutOutRect = RRect.fromRectAndCorners(
+//       innerRect,
+//       topLeft: Radius.circular(overlayShape.borderRadius!),
+//       topRight: Radius.circular(overlayShape.borderRadius!),
+//       bottomLeft: Radius.circular(overlayShape.borderRadius!),
+//       bottomRight: Radius.circular(overlayShape.borderRadius!),
+//     );
+
+//     canvas.drawRRect(cutOutRect, paint);
+//   }
+
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) {
+//     return false;
+//   }
+// }
+
+// class QrScannerOverlayShape {
+//   final Color? borderColor;
+//   final double? borderWidth;
+//   final double? borderLength;
+//   final double? borderRadius;
+//   final double? cutOutBottomOffset;
+
+//   QrScannerOverlayShape({
+//     this.borderColor,
+//     this.borderWidth,
+//     this.borderLength,
+//     this.borderRadius,
+//     this.cutOutBottomOffset,
+//   });
+// }

@@ -10,6 +10,14 @@ class BottomSheetPaymentLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String displayString = 'Paying $name ₹$amount';
+    double fontSize = 18;
+
+    if (displayString.length > 31) {
+      displayString = "Paying Securely with Google Pay...";
+      fontSize = 17;
+    }
+
     return Container(
       height: 100,
       padding: const EdgeInsets.all(16),
@@ -36,8 +44,8 @@ class BottomSheetPaymentLoading extends StatelessWidget {
                   color: blueButtonColor,
                 ))),
         Text(
-          'Paying $name ₹$amount',
-          style: const TextStyle(fontFamily: 'Product Sans', fontSize: 18),
+          displayString,
+          style: TextStyle(fontFamily: 'Product Sans', fontSize: fontSize),
         ),
       ]),
     );

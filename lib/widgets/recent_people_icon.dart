@@ -43,6 +43,7 @@ class RecentPeopleIcon extends StatelessWidget {
               child: Text(
                 name,
                 overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontFamily: 'Product Sans'),
               ),
             ),
           ],

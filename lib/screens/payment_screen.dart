@@ -49,7 +49,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       String sender_id, String reciever_id, String senderHexColor) async {
     bool check = false;
     if (widget.isCustomTransaction) {
-      check = true;
+      check = false;
     } else {
       check = await FireStoreMethods().addTransactionDetails(
           sender_id,
@@ -78,8 +78,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _payingNameController.text = "Paying ${userDocSnap['paying_name']}";
     _bankingNameController.text = "Banking Name : ${userDocSnap['name']}";
     receiverColor = hexToColor(userDocSnap['hexColor']);
-    if (_payingNameController.text.contains("Paytm Merchant")) {
+    if (_payingNameController.text.contains("Paytm Merchant") ||
+        _payingNameController.text.contains("PhonePe")) {
       receiverColor = hexToColor("#9546c7");
+    } else if (_payingNameController.text.contains("Google")) {
+      receiverColor = hexToColor("#079494");
+    } else {
+      receiverColor = hexToColor("#969595");
     }
     recieverIconLetter =
         userDocSnap['paying_name'].substring(0, 1).toUpperCase();
@@ -96,7 +101,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     model.User user = Provider.of<UserProvider>(context).getUser;
-
+    print("Hello " + _bankingNameController.text.length.toString());
     double fullScreenWidth = MediaQuery.of(context).size.width;
     double fullScreenHeight = MediaQuery.of(context).size.height;
     double heightOfTextField = 23;
@@ -169,38 +174,67 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 decoration: const InputDecoration(border: InputBorder.none),
                 textAlign: TextAlign.center,
                 controller: _payingNameController,
-                style: TextStyle(
+                style: const TextStyle(
                     fontFamily: 'Product Sans',
                     fontSize: 18.5,
                     fontWeight: FontWeight.w300),
               ),
             ),
-            SizedBox(
-              width: fullScreenWidth * 0.6,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 4.0),
+                  child: SizedBox(
                     width: fullScreenWidth * 0.05,
                     height: heightOfTextField,
                     child: SvgPicture.asset('assets/images/secure.svg'),
                   ),
-                  SizedBox(
-                    height: heightOfTextField,
-                    width: fullScreenWidth * 0.5,
-                    child: TextField(
-                      readOnly: true,
-                      enableInteractiveSelection: false,
-                      decoration:
-                          const InputDecoration(border: InputBorder.none),
-                      textAlign: TextAlign.center,
-                      controller: _bankingNameController,
-                      style:
-                          TextStyle(fontFamily: 'Product Sans', fontSize: 15),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                // ConstrainedBox(
+                // constraints: BoxConstraints(
+                //     maxHeight: heightOfTextField,
+                //     minWidth: fullScreenWidth * 0.5,
+                //     maxWidth: fullScreenWidth * 0.8),
+                //   child: TextField(
+                //     readOnly: true,
+                //     enableInteractiveSelection: false,
+                //     decoration:
+                //         const InputDecoration(border: InputBorder.none),
+                //     textAlign: TextAlign.center,
+                //     controller: _bankingNameController,
+                //     style:
+                //         TextStyle(fontFamily: 'Product Sans', fontSize: 15),
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: heightOfTextField,
+                //   width: fullScreenWidth * 0.75,
+                //   child: TextField(
+                //     readOnly: true,
+                //     enableInteractiveSelection: false,
+                //     decoration:
+                //         const InputDecoration(border: InputBorder.none),
+                //     textAlign: TextAlign.center,
+                //     controller: _bankingNameController,
+                //     style:
+                //         TextStyle(fontFamily: 'Product Sans', fontSize: 15),
+                //   ),
+                // ),
+                // ConstrainedBox(
+                //   constraints: BoxConstraints(
+                //       maxHeight: heightOfTextField,
+                //       minWidth: fullScreenWidth * 0.5,
+                //       maxWidth: fullScreenWidth * 0.8),
+                //   child:
+                Text(
+                  _bankingNameController.text,
+                  style: TextStyle(
+                      fontFamily: 'Product Sans',
+                      fontSize:
+                          _bankingNameController.text.length > 40 ? 10 : 15),
+                )
+              ],
             ),
             SizedBox(
               height: heightOfTextField,
@@ -210,7 +244,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 decoration: const InputDecoration(border: InputBorder.none),
                 textAlign: TextAlign.center,
                 controller: _upiIDController,
-                style: TextStyle(fontFamily: 'Product Sans', fontSize: 15),
+                style:
+                    const TextStyle(fontFamily: 'Product Sans', fontSize: 15),
               ),
             ),
             Container(
@@ -312,7 +347,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       },
     );
     await _addTransaction(user.uid, _upiIDController.text, user.hexColor);
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
       Navigator.pop(context);
       Navigator.push(
           context,
